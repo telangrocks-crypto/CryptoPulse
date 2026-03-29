@@ -1,0 +1,261 @@
+name: Manual Testing - Interactive Browser Emulator
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  JAVA_VERSION: '17'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+  # =============================================================================
+  # BUILD APK FOR MANUAL TESTING
+  # =============================================================================
+  build-manual-testing-apk:
+    name: Build APK for Manual Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        
+    - name: Cache Gradle
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        
+    - name: Grant Execute Permission
+      run: chmod +x gradlew
+      
+    - name: Build Debug APK (Faster)
+      run: |
+        ./gradlew clean assembleDebug --no-daemon --stacktrace
+        
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: manual-testing-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 7
+
+  # =============================================================================
+  # DEPLOY TO BROWSER-BASED EMULATOR (Appetize.io)
+  # =============================================================================
+  deploy-to-appetize:
+    name: Deploy to Browser Emulator (Appetize.io)
+    runs-on: ubuntu-latest
+    needs: build-manual-testing-apk
+    timeout-minutes: 15
+    outputs:
+      emulator_url: ${{ steps.appetize.outputs.emulator_url }}
+      public_url: ${{ steps.appetize.outputs.public_url }}
+    
+    steps:
+    - name: Download APK
+      uses: actions/download-artifact@v4
+      with:
+        name: manual-testing-apk
+        path: ./
+        
+    - name: Upload to Appetize.io
+      id: appetize
+      run: |
+        echo "Uploading APK to Appetize.io for browser-based testing..."
+        
+        # Upload to Appetize.io (free tier: 100 minutes/month)
+        # This creates a browser-based emulator you can interact with
+        UPLOAD_RESPONSE=$(curl -X POST \
+          -H "Content-Type: multipart/form-data" \
+          -F "file=@app-debug.apk" \
+          -F "platform=android" \
+          https://api.appetize.io/v1/apps 2>/dev/null || echo '{}')
+        
+        echo "Upload Response: $UPLOAD_RESPONSE"
+        
+        # Extract publicKey and construct URL
+        PUBLIC_KEY=$(echo "$UPLOAD_RESPONSE" | grep -o '"publicKey":"[^"]*"' | cut -d'"' -f4)
+        
+        if [ -n "$PUBLIC_KEY" ]; then
+          EMULATOR_URL="https://appetize.io/embed/${PUBLIC_KEY}?device=pixel4&scale=75&orientation=portrait&osVersion=12.0"
+          PUBLIC_LINK="https://appetize.io/app/${PUBLIC_KEY}?device=pixel4&scale=75&orientation=portrait&osVersion=12.0"
+          
+          echo "emulator_url=${EMULATOR_URL}" >> $GITHUB_OUTPUT
+          echo "public_url=${PUBLIC_LINK}" >> $GITHUB_OUTPUT
+          
+          echo "✅ App uploaded successfully!"
+          echo ""
+          echo "═══════════════════════════════════════════════════"
+          echo "  🎮 INTERACTIVE EMULATOR READY"
+          echo "═══════════════════════════════════════════════════"
+          echo ""
+          echo "  Click this link to use the app in your browser:"
+          echo "  ${PUBLIC_LINK}"
+          echo ""
+          echo "  You can:"
+          echo "  • Click, tap, swipe like a real phone"
+          echo "  • Type with your keyboard"
+          echo "  • Test all features manually"
+          echo "  • Session lasts ~10 minutes"
+          echo ""
+          echo "═══════════════════════════════════════════════════"
+        else
+          echo "⚠️ Upload may have failed or API limit reached"
+          echo "Appetize.io free tier: 100 minutes/month"
+          echo "Consider creating an account for more usage"
+          exit 1
+        fi
+      continue-on-error: true
+      
+    - name: Comment on PR or Commit
+      if: steps.appetize.outputs.public_url != ''
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const emulatorUrl = '${{ steps.appetize.outputs.public_url }}';
+          const embedUrl = '${{ steps.appetize.outputs.emulator_url }}';
+          
+          const body = `## 🎮 Manual Testing - Interactive Emulator Ready
+          
+          Your app is now running in a browser-based emulator! 
+          
+          ### 🔗 Click to Test:
+          **[Launch Interactive Emulator](${emulatorUrl})**
+          
+          ### What you can do:
+          - 📱 **Interact with the app** - Click, tap, swipe like a real Android phone
+          - ⌨️ **Use your keyboard** - Type in text fields
+          - 🔄 **Test all features** - Registration, trading, API keys, etc.
+          - ⏱️ **Session lasts ~10 minutes** - Then re-run the workflow for a fresh session
+          
+          ### Alternative:
+          - **Direct APK Download**: [manual-testing-apk artifact](${context.payload.repository.html_url}/actions/runs/${context.runId})
+          - **Install locally**: Download APK and install on your Android device
+          
+          ---
+          *Note: Using Appetize.io free tier (100 minutes/month). For more usage, create a paid account.*
+          `;
+          
+          // Comment on the commit
+          github.rest.repos.createCommitComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: context.sha,
+            body: body
+          });
+          
+          console.log('✅ Posted emulator link to commit');
+
+  # =============================================================================
+  # ALTERNATIVE: VNC-BASED EMULATOR (More Control)
+  # =============================================================================
+  vnc-emulator:
+    name: VNC-Based Emulator (Advanced)
+    runs-on: ubuntu-latest
+    needs: build-manual-testing-apk
+    timeout-minutes: 30
+    if: github.event_name == 'workflow_dispatch'  # Only on manual trigger to save resources
+    
+    steps:
+    - name: Download APK
+      uses: actions/download-artifact@v4
+      with:
+        name: manual-testing-apk
+        path: ./
+        
+    - name: Setup Android SDK and Emulator
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        force-avd-creation: false
+        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+        disable-animations: false
+        script: |
+          echo "Setting up VNC server for remote access..."
+          
+          # Install VNC server
+          sudo apt-get update
+          sudo apt-get install -y tightvncserver x11-xserver-utils
+          
+          # Start VNC server
+          export USER=root
+          vncserver :1 -geometry 1280x720 -depth 24 -dpi 96
+          
+          # Get public URL via ngrok (if available)
+          echo "VNC server started on display :1"
+          echo "For remote access, use a VNC client or browser-based VNC viewer"
+          
+          # Install APK
+          adb install -r app-debug.apk
+          
+          # Launch app
+          adb shell am start -n com.cryptopulse.trader/.ui.MainActivity
+          
+          # Keep emulator running for 20 minutes
+          echo "Emulator running for 20 minutes..."
+          sleep 1200
+          
+    - name: VNC Info
+      run: |
+        echo "═══════════════════════════════════════════════════"
+        echo "  VNC EMULATOR SESSION INFO"
+        echo "═══════════════════════════════════════════════════"
+        echo ""
+        echo "  VNC Display: :1"
+        echo "  Resolution: 1280x720"
+        echo ""
+        echo "  Note: VNC requires additional setup for public access"
+        echo "  (ngrok tunnel or similar service needed)"
+        echo ""
+        echo "═══════════════════════════════════════════════════"
+      continue-on-error: true
+
+  # =============================================================================
+  # SUMMARY
+  # =============================================================================
+  manual-testing-summary:
+    name: Manual Testing Summary
+    runs-on: ubuntu-latest
+    needs: [build-manual-testing-apk, deploy-to-appetize]
+    if: always()
+    
+    steps:
+    - name: Generate Summary
+      run: |
+        echo "═══════════════════════════════════════════════════"
+        echo "  MANUAL TESTING OPTIONS SUMMARY"
+        echo "═══════════════════════════════════════════════════"
+        echo ""
+        echo "  ✅ Option 1: Browser-Based Emulator (Appetize.io)"
+        echo "     - Click the link in the workflow output above"
+        echo "     - Use your mouse to interact with the app"
+        echo "     - No installation needed, runs in browser"
+        echo "     - Free tier: 100 minutes/month"
+        echo ""
+        echo "  ✅ Option 2: Download APK"
+        echo "     - Download 'manual-testing-apk' artifact"
+        echo "     - Install on your Android device"
+        echo "     - Full native experience"
+        echo ""
+        echo "  ✅ Option 3: VNC Emulator (Advanced)"
+        echo "     - Trigger 'workflow_dispatch' manually"
+        echo "     - Provides direct VNC access to emulator"
+        echo "     - More control but requires VNC client"
+        echo ""
+        echo "═══════════════════════════════════════════════════"
+        echo ""
+        echo "  Recommended: Use Option 1 (Appetize.io) for quick"
+        echo "  manual testing without any setup!"
+        echo ""
+        echo "═══════════════════════════════════════════════════"

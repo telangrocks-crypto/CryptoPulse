@@ -74,20 +74,40 @@ jobs:
       run: |
         echo "Uploading APK to Appetize.io for browser-based testing..."
         
-        # Upload to Appetize.io (free tier: 100 minutes/month)
-        # This creates a browser-based emulator you can interact with
-        UPLOAD_RESPONSE=$(curl -X POST \
+        # Check if APK exists
+        if [ ! -f "app-debug.apk" ]; then
+          echo "❌ APK file not found at app-debug.apk"
+          ls -la
+          exit 1
+        fi
+        
+        echo "✅ APK found: $(ls -lh app-debug.apk)"
+        
+        # Upload to Appetize.io with better error handling
+        UPLOAD_RESPONSE=$(curl -s -X POST \
           -H "Content-Type: multipart/form-data" \
           -F "file=@app-debug.apk" \
           -F "platform=android" \
-          https://api.appetize.io/v1/apps 2>/dev/null || echo '{}')
+          https://api.appetize.io/v1/apps 2>&1)
         
-        echo "Upload Response: $UPLOAD_RESPONSE"
+        echo "Raw Upload Response:"
+        echo "$UPLOAD_RESPONSE"
+        echo ""
         
-        # Extract publicKey and construct URL
-        PUBLIC_KEY=$(echo "$UPLOAD_RESPONSE" | grep -o '"publicKey":"[^"]*"' | cut -d'"' -f4)
+        # Check for errors in response
+        if echo "$UPLOAD_RESPONSE" | grep -q "error\|Error\|ERROR"; then
+          echo "⚠️ Upload returned error response"
+        fi
         
-        if [ -n "$PUBLIC_KEY" ]; then
+        # Extract publicKey - try multiple patterns
+        PUBLIC_KEY=$(echo "$UPLOAD_RESPONSE" | grep -o '"publicKey"[^}]*' | grep -o '[a-zA-Z0-9_-]\{20,\}' | head -1)
+        
+        if [ -z "$PUBLIC_KEY" ]; then
+          # Try alternative extraction
+          PUBLIC_KEY=$(echo "$UPLOAD_RESPONSE" | grep -o '"publicKey":"[^"]*"' | sed 's/.*"publicKey":"\([^"]*\)".*/\1/')
+        fi
+        
+        if [ -n "$PUBLIC_KEY" ] && [ ${#PUBLIC_KEY} -gt 10 ]; then
           EMULATOR_URL="https://appetize.io/embed/${PUBLIC_KEY}?device=pixel4&scale=75&orientation=portrait&osVersion=12.0"
           PUBLIC_LINK="https://appetize.io/app/${PUBLIC_KEY}?device=pixel4&scale=75&orientation=portrait&osVersion=12.0"
           
@@ -111,15 +131,38 @@ jobs:
           echo ""
           echo "═══════════════════════════════════════════════════"
         else
-          echo "⚠️ Upload may have failed or API limit reached"
-          echo "Appetize.io free tier: 100 minutes/month"
-          echo "Consider creating an account for more usage"
-          exit 1
+          echo ""
+          echo "⚠️ Appetize.io upload may have failed"
+          echo ""
+          echo "═══════════════════════════════════════════════════"
+          echo "  📱 ALTERNATIVE: DOWNLOAD APK"
+          echo "═══════════════════════════════════════════════════"
+          echo ""
+          echo "  Since browser emulator failed, you can:"
+          echo ""
+          echo "  1. Download the APK artifact from this workflow"
+          echo "     (Look for 'manual-testing-apk' in artifacts)"
+          echo ""
+          echo "  2. Install on your Android device:"
+          echo "     - Transfer APK to phone"
+          echo "     - Tap to install"
+          echo "     - Open and test normally"
+          echo ""
+          echo "  3. Or use Android Studio emulator:"
+          echo "     - Tools → Device Manager"
+          echo "     - Create virtual device"
+          echo "     - Drag APK to emulator"
+          echo ""
+          echo "═══════════════════════════════════════════════════"
+          
+          # Don't fail the workflow, just warn
+          echo "emulator_url=" >> $GITHUB_OUTPUT
+          echo "public_url=" >> $GITHUB_OUTPUT
         fi
       continue-on-error: true
       
     - name: Comment on PR or Commit
-      if: steps.appetize.outputs.public_url != ''
+      if: steps.appetize.outputs.public_url != '' && steps.appetize.outputs.public_url != 'https://appetize.io/app/?device=pixel4'
       uses: actions/github-script@v7
       with:
         script: |
@@ -234,28 +277,39 @@ jobs:
     - name: Generate Summary
       run: |
         echo "═══════════════════════════════════════════════════"
-        echo "  MANUAL TESTING OPTIONS SUMMARY"
+        echo "  📱 MANUAL TESTING - APK READY FOR DOWNLOAD"
         echo "═══════════════════════════════════════════════════"
         echo ""
-        echo "  ✅ Option 1: Browser-Based Emulator (Appetize.io)"
-        echo "     - Click the link in the workflow output above"
-        echo "     - Use your mouse to interact with the app"
-        echo "     - No installation needed, runs in browser"
-        echo "     - Free tier: 100 minutes/month"
+        echo "  ✅ APK Build Complete!"
         echo ""
-        echo "  ✅ Option 2: Download APK"
-        echo "     - Download 'manual-testing-apk' artifact"
-        echo "     - Install on your Android device"
-        echo "     - Full native experience"
+        echo "  📥 Download Instructions:"
+        echo "  ─────────────────────────────────────────────────"
         echo ""
-        echo "  ✅ Option 3: VNC Emulator (Advanced)"
-        echo "     - Trigger 'workflow_dispatch' manually"
-        echo "     - Provides direct VNC access to emulator"
-        echo "     - More control but requires VNC client"
+        echo "  1. Click 'Artifacts' section above (in this workflow run)"
+        echo "  2. Download 'manual-testing-apk'"
+        echo "  3. The file is: app-debug.apk"
+        echo ""
+        echo "  📱 Install on Android Device:"
+        echo "  ─────────────────────────────────────────────────"
+        echo "  • Transfer APK to your phone (USB, email, cloud)"
+        echo "  • On phone: Tap the APK file"
+        echo "  • Allow 'Install from unknown sources' if prompted"
+        echo "  • Install and open the app"
+        echo ""
+        echo "  💻 Alternative: Android Studio Emulator"
+        echo "  ─────────────────────────────────────────────────"
+        echo "  • Open Android Studio"
+        echo "  • Tools → Device Manager → Create Device"
+        echo "  • Start emulator"
+        echo "  • Drag APK file onto emulator window"
+        echo ""
+        echo "  🧪 Test Checklist:"
+        echo "  • User Registration / Login"
+        echo "  • API Key Setup"
+        echo "  • Entry Price Configuration"
+        echo "  • Trade Simulation"
+        echo "  • Exchange Connectivity"
         echo ""
         echo "═══════════════════════════════════════════════════"
-        echo ""
-        echo "  Recommended: Use Option 1 (Appetize.io) for quick"
-        echo "  manual testing without any setup!"
-        echo ""
+        echo "  Download the APK now and start testing!"
         echo "═══════════════════════════════════════════════════"

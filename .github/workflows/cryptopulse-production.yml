@@ -42,6 +42,10 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
+
+    # GRANT EXECUTE PERMISSION FIRST
+    - name: Grant Execute Permission for Gradlew
+      run: chmod +x gradlew
     
     # CLEAN STEP
     - name: Clean Project
@@ -104,6 +108,10 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
+
+    # GRANT EXECUTE PERMISSION
+    - name: Grant Execute Permission for Gradlew
+      run: chmod +x gradlew
     
     # BACKEND HEALTH CHECKS WITH RETRY
     - name: API Gateway Health Check (with retry)
@@ -219,6 +227,10 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
+
+    # GRANT EXECUTE PERMISSION
+    - name: Grant Execute Permission for Gradlew
+      run: chmod +x gradlew
     
     # FINAL CLEAN BUILD
     - name: Final Clean Build (with retry)

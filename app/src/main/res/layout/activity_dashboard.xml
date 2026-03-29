@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_screen"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md"
+                android:paddingBottom="100dp">
+
+                <!-- Main Action Card - ALL BUTTONS VISIBLE -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/Widget.CryptoPulse.Card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_md">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing_md">
+
+
+                        <!-- Exchange Balance (Hidden until API validated) -->
+
+
+                        <!-- ============================================== -->
+                        <!-- ALL 5 BUTTONS VISIBLE IMMEDIATELY ON APP OPEN -->
+                        <!-- ============================================== -->
+
+                        <!-- Button 1: Activate API Key (Box Style) -->
+                        <LinearLayout
+                            android:id="@+id/btnConnectAPI"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:padding="12dp"
+                            android:background="@drawable/bg_balance_border"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="CRYPTOPULSE"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_11sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="2dp">
+
+                                <ImageView
+                                    android:id="@+id/ivConnectAPI"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@android:drawable/ic_menu_manage"
+                                    app:tint="@color/brand_primary" />
+
+                                <TextView
+                                    android:id="@+id/tvConnectAPIText"
+                                    style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ACTIVATE API KEY"
+                                    android:textColor="@color/brand_primary"
+                                    android:textSize="@dimen/text_20sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Button 1.5: Re-configure Keys (Box Style, Hidden) -->
+                        <LinearLayout
+                            android:id="@+id/btnChangeApiKey"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:padding="12dp"
+                            android:background="@drawable/bg_balance_border"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:visibility="gone">
+
+                            <TextView
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="SECURITY SETTINGS"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_11sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="2dp">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@android:drawable/ic_menu_edit"
+                                    app:tint="@color/status_success" />
+
+                                <TextView
+                                    android:id="@+id/tvChangeApiKeyText"
+                                    style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="RE-CONFIGURE API KEYS"
+                                    android:textColor="@color/status_success"
+                                    android:textSize="@dimen/text_20sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+
+
+                        <!-- Exchange Balance (Displayed below Button once validated) -->
+                        <LinearLayout
+                            android:id="@+id/layoutExchangeStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone"
+                            android:layout_marginTop="8dp"
+                            android:padding="12dp"
+                            android:background="@drawable/bg_balance_border"
+                            android:gravity="center">
+
+                            <TextView
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Total Equity"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_11sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="2dp">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@android:drawable/ic_menu_view"
+                                    app:tint="@color/status_success" />
+
+                                <TextView
+                                    android:id="@+id/tvExchangeBalance"
+                                    style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="0.00"
+                                    android:textColor="@color/status_success"
+                                    android:textSize="@dimen/text_20sp" />
+
+                                <TextView
+                                    android:id="@+id/tvExchangeCurrency"
+                                    style="@style/TextAppearance.CryptoPulse.Body"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=" USDT"
+                                    android:textColor="@color/status_success"
+                                    android:layout_marginStart="6dp"
+                                    android:textSize="@dimen/text_14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- Button 2: Set Position Size (Styled like Balance Box) -->
+                        <LinearLayout
+                            android:id="@+id/btnSetEntryPrice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:padding="12dp"
+                            android:background="@drawable/bg_balance_border"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:visibility="visible">
+
+                            <TextView
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ENTRY POINT / POSITION SIZE"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_11sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="2dp">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@android:drawable/ic_menu_edit"
+                                    app:tint="@color/status_success" />
+
+                                <TextView
+                                    android:id="@+id/tvPositionSizeDisplay"
+                                    style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="SET ENTRY"
+                                    android:textColor="@color/status_success"
+                                    android:textSize="@dimen/text_20sp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+
+
+                        <!-- Reordered Buttons below Entry Price -->
+
+                        <!-- Button 3: Scan Markets (New Order: 1st below Entry) -->
+                        <LinearLayout
+                            android:id="@+id/btnFetchCoins"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:padding="12dp"
+                            android:background="@drawable/bg_balance_border"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="OPPORTUNITY SCANNER"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_11sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="2dp">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@android:drawable/ic_menu_search"
+                                    app:tint="@color/status_success" />
+
+                                <TextView
+                                    android:id="@+id/tvScanMarkets"
+                                    style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="SCAN MARKETS"
+                                    android:textColor="@color/status_success"
+                                    android:textSize="@dimen/text_20sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Market Data Section (Inline expansion) -->
+                        <LinearLayout
+                            android:id="@+id/cardMarketData"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:background="@drawable/bg_balance_border"
+                            android:orientation="vertical"
+                            android:padding="@dimen/spacing_md"
+                            android:visibility="visible">
+
+                            <TextView
+                                android:id="@+id/tvPairsHeading"
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Most Profitable Pairs for Trading"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_11sp"
+                                android:gravity="center"
+                                android:layout_marginBottom="4dp"/>
+
+                            <TextView
+                                android:id="@+id/tvSelectedPair"
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="None Selected"
+                                android:textColor="@color/status_success"
+                                android:visibility="gone"
+                                android:gravity="center"
+                                android:textSize="@dimen/text_12sp"
+                                android:layout_marginBottom="12dp"/>
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvMarketData"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false"
+                                android:layout_marginBottom="16dp"/>
+
+                            <TextView
+                                android:id="@+id/tvNoData"
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Scanning markets..."
+                                android:textAlignment="center"
+                                android:padding="32dp"
+                                android:visibility="gone" />
+
+                        </LinearLayout>
+
+                        <!-- Button 7: Multi-Timeframe Matrix (New Order: 2nd below Entry) -->
+                        <LinearLayout
+                            android:id="@+id/btnScannerMatrix"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:padding="12dp"
+                            android:background="@drawable/bg_balance_border"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="STRATEGY SIGNAL RESULTS"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_11sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="2dp">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@android:drawable/ic_menu_sort_by_size"
+                                    app:tint="@color/status_success" />
+
+                                <TextView
+                                    android:id="@+id/tvScannerMatrixText"
+                                    style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="STRATEGY RESULTS TABLE"
+                                    android:textColor="@color/status_success"
+                                    android:textSize="@dimen/text_18sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- INDEPENDENT SCANNER MATRIX WINDOW (Inline expansion) -->
+                        <include 
+                            android:id="@+id/layoutScannerMatrix"
+                            layout="@layout/card_scanner_matrix"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:visibility="gone" />
+
+                        <!-- Button 4: Simulate Trades (Box Style) -->
+                        <LinearLayout
+                            android:id="@+id/btnExecuteTrade"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:padding="12dp"
+                            android:background="@drawable/bg_balance_border"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="SIMULATION ENGINE"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_11sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="2dp">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@android:drawable/ic_menu_send"
+                                    app:tint="@color/status_success" />
+
+                                <TextView
+                                    android:id="@+id/tvSimulateTradesText"
+                                    style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="SIMULATE TRADES"
+                                    android:textColor="@color/status_success"
+                                    android:textSize="@dimen/text_20sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Button 5: Active Positions (Box Style) -->
+                        <LinearLayout
+                            android:id="@+id/btnViewActivePositions"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:padding="12dp"
+                            android:background="@drawable/bg_balance_border"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <TextView
+                                style="@style/TextAppearance.CryptoPulse.Body"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="PORTFOLIO TRACKER"
+                                android:textAllCaps="true"
+                                android:letterSpacing="0.1"
+                                android:textColor="@color/text_secondary"
+                                android:textSize="@dimen/text_11sp" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginTop="2dp">
+
+                                <ImageView
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@android:drawable/ic_menu_agenda"
+                                    app:tint="@color/status_success" />
+
+                                <TextView
+                                    android:id="@+id/tvActivePositionsText"
+                                    style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="ACTIVE POSITIONS"
+                                    android:textColor="@color/status_success"
+                                    android:textSize="@dimen/text_20sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Active Positions Section (Inline expansion) -->
+                        <include
+                            android:id="@+id/active_positions_section"
+                            layout="@layout/layout_active_positions"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:visibility="visible" />
+
+
+
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- ============================================== -->
+                <!-- DATA SECTIONS: ALL HIDDEN UNTIL BUTTON TAPPED -->
+                <!-- ============================================== -->
+
+
+
+
+
+
+
+
+
+
+
+                <!-- Moved up -->
+
+
+
+                <!-- Live Balance and Portfolio Section (Hidden) -->
+
+
+                <!-- Account Management Section -->
+                <LinearLayout
+                    android:id="@+id/cardAccountManagement"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_balance_border"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        style="@style/TextAppearance.CryptoPulse.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="ACCOUNT MANAGEMENT"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.1"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_11sp"
+                        android:gravity="center"
+                        android:layout_marginBottom="12dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSubscribe"
+                        style="@style/Widget.CryptoPulse.Button.Outlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:text="Subscribe to Premium"
+                        android:textColor="@color/status_success"
+                        app:strokeColor="@color/status_success"
+                        app:iconTint="@color/status_success"
+                        app:icon="@android:drawable/ic_menu_add" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnChangeMobile"
+                        style="@style/Widget.CryptoPulse.Button.Outlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:text="Change Mobile Number"
+                        android:textColor="@color/status_success"
+                        app:strokeColor="@color/status_success"
+                        app:iconTint="@color/status_success"
+                        app:icon="@android:drawable/ic_menu_call" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnLogout"
+                        style="@style/Widget.CryptoPulse.Button.Outlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Logout"
+                        android:textColor="@color/status_success"
+                        app:strokeColor="@color/status_success"
+                        app:iconTint="@color/status_success"
+                        app:icon="@android:drawable/ic_menu_revert" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnExportLogs"
+                        style="@style/Widget.CryptoPulse.Button.Outlined"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:text="Export Diagnostics (CID)"
+                        android:textColor="@color/text_secondary"
+                        app:strokeColor="@color/text_secondary"
+                        app:iconTint="@color/text_secondary"
+                        app:icon="@android:drawable/ic_menu_info_details" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <include 
+        android:id="@+id/loaderOverlay"
+        layout="@layout/layout_loader_overlay" />
+
+    <include 
+        android:id="@+id/subscriptionLockOverlayGroup"
+        layout="@layout/layout_subscription_lock" />
+
+</FrameLayout>

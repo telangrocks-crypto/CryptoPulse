@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tvParamName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Parameter Name"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_14sp"/>
+
+    <!-- Status Dot -->
+    <View
+        android:id="@+id/viewStatusDot"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/bg_status_dot_red"
+        android:layout_marginEnd="8dp"/>
+
+    <TextView
+        android:id="@+id/tvParamValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status Value"
+        android:textColor="@color/text_secondary"
+        android:textSize="@dimen/text_14sp"
+        android:minWidth="100dp"
+        android:gravity="start"/>
+
+</LinearLayout>

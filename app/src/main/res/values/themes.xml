@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base Application Theme: Bybit Enterprise -->
+    <style name="Theme.CryptoPulse" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Brand Colors -->
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorPrimaryVariant">@color/brand_primary_dark</item>
+        <item name="colorOnPrimary">@color/text_inverse</item>
+        
+        <item name="colorSecondary">@color/brand_secondary</item>
+        <item name="colorSecondaryVariant">@color/bg_surface</item>
+        <item name="colorOnSecondary">@color/text_primary</item>
+        
+        <!-- Backgrounds -->
+        <item name="android:windowBackground">@color/bg_screen</item>
+        <item name="android:colorBackground">@color/bg_screen</item>
+        <item name="colorSurface">@color/bg_card</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        
+        <!-- Status Bar -->
+        <item name="android:statusBarColor">@color/bg_screen</item>
+        <item name="android:windowLightStatusBar">false</item>
+        
+        <!-- Typography Defaults -->
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        
+        <!-- Global Dialog Theme -->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.CryptoPulse.MaterialAlertDialog</item>
+    </style>
+
+    <!-- Component Styles -->
+    
+    <!-- Premium Card -->
+    <style name="Widget.CryptoPulse.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/bg_card</item>
+        <item name="cardCornerRadius">@dimen/card_corner_radius</item>
+        <item name="cardElevation">@dimen/card_elevation</item>
+        <item name="strokeColor">@color/divider</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <!-- Premium Button -->
+    <style name="Widget.CryptoPulse.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/brand_primary</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
+        <item name="android:paddingVertical">12dp</item>
+        <item name="android:textSize">@dimen/text_base</item>
+        <item name="android:textColor">@color/text_inverse</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+    
+    <!-- Outlined Button -->
+    <style name="Widget.CryptoPulse.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="strokeColor">@color/divider</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <!-- Typography Styles -->
+    <style name="TextAppearance.CryptoPulse.HeadLine1" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textSize">@dimen/text_2xl</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:letterSpacing">-0.01</item>
+        <item name="android:fontFamily">sans-serif-bold</item>
+    </style>
+
+    <style name="TextAppearance.CryptoPulse.HeadLine2" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">@dimen/text_xl</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    
+    <style name="TextAppearance.CryptoPulse.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">@dimen/text_xs</item>
+        <item name="android:textColor">@color/text_tertiary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.CryptoPulse.Body" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">@dimen/text_base</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <!-- Premium Dialog Style -->
+    <style name="ThemeOverlay.CryptoPulse.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+
+        <item name="colorSurface">@color/bg_card</item>
+        <item name="colorPrimary">@color/status_success</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <!-- <item name="alertDialogStyle">@style/MaterialAlertDialog.CryptoPulse</item> -->
+        <!-- <item name="buttonBarPositiveButtonStyle">@style/Widget.CryptoPulse.Button.Text</item> -->
+        <!-- <item name="buttonBarNegativeButtonStyle">@style/Widget.CryptoPulse.Button.Text</item> -->
+        <!-- <item name="materialAlertDialogTitleTextStyle">@style/DialogTitle.CryptoPulse</item> -->
+    </style>
+
+    <style name="MaterialAlertDialog.CryptoPulse" parent="MaterialAlertDialog.Material3">
+        <item name="background">@drawable/bg_balance_border</item> 
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+    </style>
+
+    <style name="Widget.CryptoPulse.Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/status_success</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_sm</item>
+    </style>
+
+    <style name="Widget.CryptoPulse.EditText" parent="android:Widget.EditText">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">@dimen/text_base</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="DialogTitle.CryptoPulse" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textColor">@color/status_success</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_xl</item>
+    </style>
+
+    <style name="Divider_CryptoPulse">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">@color/divider</item>
+    </style>
+</resources>

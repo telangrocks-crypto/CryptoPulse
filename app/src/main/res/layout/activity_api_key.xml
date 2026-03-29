@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="32dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_back"
+                android:background="@drawable/bg_circle_ripple"
+                android:scaleType="centerInside"
+                app:tint="@color/text_primary"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="Back" />
+
+            <TextView
+                style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Secure API Settings" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_balance_border"
+            android:padding="24dp">
+            
+            <TextView
+                style="@style/TextAppearance.CryptoPulse.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Configuring API keys allows the AI to monitor and execute trades on your behalf. These keys are encrypted and stored locally."
+                android:layout_marginBottom="24dp" />
+
+            <!-- Select Exchange -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Select Exchange"
+                app:boxStrokeColor="@color/status_success"
+                app:hintTextColor="@color/status_success"
+                app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/input_corner_radius">
+
+                <AutoCompleteTextView
+                    android:id="@+id/spinnerExchange"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    style="@style/Widget.CryptoPulse.EditText"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- API Key -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Bybit API Key"
+                app:boxStrokeColor="@color/status_success"
+                app:hintTextColor="@color/status_success"
+                app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/status_success">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etApiKey"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    style="@style/Widget.CryptoPulse.EditText"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- API Secret -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:hint="Bybit API Secret"
+                app:boxStrokeColor="@color/status_success"
+                app:hintTextColor="@color/status_success"
+                app:boxCornerRadiusBottomEnd="@dimen/input_corner_radius"
+                app:boxCornerRadiusBottomStart="@dimen/input_corner_radius"
+                app:boxCornerRadiusTopEnd="@dimen/input_corner_radius"
+                app:boxCornerRadiusTopStart="@dimen/input_corner_radius"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/status_success">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etApiSecret"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    style="@style/Widget.CryptoPulse.EditText"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                style="@style/TextAppearance.CryptoPulse.BodySmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Environment"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@color/status_success"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggleEnv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                app:checkedButton="@+id/btnTestnet">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTestnet"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Demo (Testnet)"
+                    app:strokeColor="@color/status_success"
+                    app:rippleColor="#2EBD85"
+                    app:cornerRadius="@dimen/button_corner_radius" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMainnet"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Live (Mainnet)"
+                    app:strokeColor="@color/status_success"
+                    app:rippleColor="#2EBD85"
+                    app:cornerRadius="@dimen/button_corner_radius" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnValidateAndSave"
+                style="@style/Widget.CryptoPulse.Button"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Validate &amp; Save Keys"
+                app:backgroundTint="@color/status_success"
+                app:iconTint="@color/text_inverse"
+                app:icon="@drawable/ic_check" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvValidationStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="@dimen/text_14sp"
+            android:visibility="gone" />
+
+
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/Widget.CryptoPulse.Card"
+    android:animateLayoutChanges="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SELECTION INTELLIGENCE"
+            style="@style/TextAppearance.CryptoPulse.BodySmall"
+            android:textColor="@color/brand_primary"
+            android:letterSpacing="0.1"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Screening Logic"
+                style="@style/TextAppearance.CryptoPulse.Body"
+                android:textColor="@color/text_secondary"/>
+
+            <TextView
+                android:id="@+id/tvScreeningLogic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Volatility &amp; Volume Scalp"
+                style="@style/TextAppearance.CryptoPulse.Body"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Key Indicators"
+                style="@style/TextAppearance.CryptoPulse.Body"
+                android:textColor="@color/text_secondary"/>
+
+            <TextView
+                android:id="@+id/tvKeyIndicators"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vol 24h, Spread, Trend"
+                style="@style/TextAppearance.CryptoPulse.Body"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#1AFFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/tvSelectionReason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Shortlisted due to high relative volume spikes indicating potential breakout."
+            style="@style/TextAppearance.CryptoPulse.BodySmall"
+            android:textColor="@color/text_tertiary"
+            android:lineSpacingMultiplier="1.2"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

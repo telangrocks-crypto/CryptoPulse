@@ -1,0 +1,221 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardLiveTradeItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_balance_border"
+    android:orientation="vertical"
+    android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="0dp"
+    android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+
+            <TextView
+                android:id="@+id/tvLiveTradeSymbol"
+                style="@style/TextAppearance.CryptoPulse.HeadLine2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="BTC/USDT"
+                android:textColor="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/tvLiveTradePnl"
+                style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+0.00%"
+                android:textColor="@color/status_success"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+            
+            <TextView
+                    style="@style/TextAppearance.CryptoPulse.BodySmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SIDE: "
+                    android:textAllCaps="true"
+                    android:textColor="@color/text_secondary" />
+            <TextView
+                    android:id="@+id/tvLiveTradeSide"
+                    style="@style/TextAppearance.CryptoPulse.BodySmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BUY"
+                    android:textStyle="bold"
+                    android:textColor="@color/status_success" />
+
+            <View 
+                android:layout_width="1dp"
+                android:layout_height="12dp"
+                android:background="@color/text_secondary"
+                android:layout_marginHorizontal="8dp" />
+
+            <TextView
+                style="@style/TextAppearance.CryptoPulse.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LIVE: "
+                android:textAllCaps="true"
+                android:textColor="@color/text_secondary" />
+            <TextView
+                android:id="@+id/tvLiveTradeCurrentPrice"
+                style="@style/TextAppearance.CryptoPulse.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$0.00"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary" />
+        </LinearLayout>
+
+        <!-- New Centralized Progress Visualization -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp">
+
+            <!-- Entry Price Label Centered -->
+            <TextView
+                android:id="@+id/tvLiveTradeEntryLabel"
+                style="@style/TextAppearance.CryptoPulse.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Entry: $50,000.00"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:background="@drawable/bg_pill_dark"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" 
+                android:elevation="4dp"/>
+
+            <!-- Split Progress Bar Container -->
+            <LinearLayout
+                android:id="@+id/layoutProgressBars"
+                android:layout_width="match_parent"
+                android:layout_height="12dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                app:layout_constraintTop_toBottomOf="@id/tvLiveTradeEntryLabel">
+
+                <!-- Loss Side (Red) - Fills Right to Left -->
+                <ProgressBar
+                    android:id="@+id/pbTradeLoss"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/progress_loss_gradient"
+                    android:scaleX="-1" 
+                    android:layout_marginEnd="1dp"/>
+
+                <!-- Profit Side (Green) - Fills Left to Right -->
+                <ProgressBar
+                    android:id="@+id/pbTradeWin"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:max="100"
+                    android:progress="0"
+                    android:progressDrawable="@drawable/progress_win_gradient"
+                    android:layout_marginStart="1dp"/>
+
+            </LinearLayout>
+
+            <!-- Center Marker Line -->
+            <View
+                android:layout_width="2dp"
+                android:layout_height="16dp"
+                android:background="@color/text_primary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/layoutProgressBars"
+                app:layout_constraintBottom_toBottomOf="@id/layoutProgressBars"/>
+
+            <!-- SL / TP Labels -->
+            <!-- Redesigned as Pills with Full Text -->
+            <TextView
+                android:id="@+id/tvLiveTradeSl"
+                style="@style/TextAppearance.CryptoPulse.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop Loss: $49,500.00"
+                android:textStyle="bold"
+                android:textColor="@color/status_error"
+                android:background="@drawable/bg_pill_dark"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutProgressBars"/>
+
+            <TextView
+                android:id="@+id/tvLiveTradeTp"
+                style="@style/TextAppearance.CryptoPulse.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Take Profit: $51,000.00"
+                android:textStyle="bold"
+                android:textColor="@color/status_success"
+                android:background="@drawable/bg_pill_dark"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutProgressBars"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        
+        <!-- MANUAL INTERVENTION WARNING -->
+        <TextView
+            android:id="@+id/tvManualInterventionWarning"
+            style="@style/TextAppearance.CryptoPulse.BodySmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="#7F1D1D"
+            android:padding="8dp"
+            android:text="⚠ MANUAL INTERVENTION REQUIRED: Guardian disconnected. Please close or manage this position on the exchange."
+            android:textColor="@color/status_error"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelTrade"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Close Position"
+            android:textColor="@color/status_error"
+            app:strokeColor="@color/status_error"
+            app:icon="@android:drawable/ic_menu_close_clear_cancel"
+            app:iconTint="@color/status_error"
+            app:cornerRadius="@dimen/button_corner_radius"/>
+
+</LinearLayout>

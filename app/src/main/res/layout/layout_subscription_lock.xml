@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/subscriptionLockOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D90B0E11"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="32dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ivLockIcon"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@android:drawable/ic_lock_lock"
+            app:tint="@color/status_error"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/tvLockTitle"
+            style="@style/TextAppearance.CryptoPulse.HeadLine1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SESSION EXPIRED"
+            android:textColor="@color/text_inverse"
+            android:textSize="@dimen/text_24sp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/tvLockMessage"
+            style="@style/TextAppearance.CryptoPulse.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your 24-hour trial period has concluded. Recharge now to resume institutional-grade AI signals and automated execution."
+            android:textColor="@color/text_secondary"
+            android:textAlignment="center"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="32dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOverlaySubscribe"
+            style="@style/Widget.CryptoPulse.Button"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="SUBSCRIBE &amp; UNLOCK"
+            android:textSize="@dimen/text_16sp"
+            app:cornerRadius="8dp"
+            android:backgroundTint="@color/brand_primary" />
+
+        <TextView
+            android:id="@+id/btnOverlayLogout"
+            style="@style/TextAppearance.CryptoPulse.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LOGOUT &amp; EXIT"
+            android:textColor="@color/text_secondary"
+            android:padding="16dp"
+            android:layout_marginTop="16dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+</FrameLayout>

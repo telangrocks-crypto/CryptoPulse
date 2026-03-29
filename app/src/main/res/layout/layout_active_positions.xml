@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_active_positions"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_balance_border"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        style="@style/TextAppearance.CryptoPulse.BodySmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LIVE PORTFOLIO TRACKER"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:letterSpacing="0.1"
+        android:textColor="@color/status_success"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_view_history"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="36dp"
+            android:text="HISTORY"
+            android:textColor="@color/brand_primary"
+            android:textSize="@dimen/text_12sp"
+            android:textStyle="bold"
+            app:icon="@android:drawable/ic_menu_recent_history"
+            app:iconSize="16dp"
+            app:iconTint="@color/brand_primary" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_master_cancel_new"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="36dp"
+            android:text="CLOSE ALL"
+            android:textColor="@color/status_error"
+            android:textSize="@dimen/text_12sp"
+            android:textStyle="bold"
+            app:icon="@android:drawable/ic_menu_close_clear_cancel"
+            app:iconSize="16dp"
+            app:iconTint="#EF4444"
+            app:rippleColor="#EF4444" />
+    </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Active Trades List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_active_trades"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false" />
+
+        <!-- Empty State with Premium Styling -->
+        <LinearLayout
+            android:id="@+id/layout_empty_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@android:drawable/ic_menu_agenda"
+                android:alpha="0.3"
+                app:tint="@color/text_secondary"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tv_active_trades_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="No active positions"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Your open trades will appear here"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/text_12sp"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+</LinearLayout>

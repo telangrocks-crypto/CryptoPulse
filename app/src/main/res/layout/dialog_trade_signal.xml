@@ -1,0 +1,418 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.CryptoPulse.Card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp">
+
+    <!-- Container for Signal Details and Progress -->
+    <LinearLayout
+        android:id="@+id/layoutSignalContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:visibility="visible">
+
+        <!-- Compact Header: BUY/SELL Centered -->
+        <TextView
+            android:id="@+id/tvSignalType"
+            style="@style/TextAppearance.CryptoPulse.HeadLine1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="BUY"
+            android:textColor="@color/status_success"
+            android:textSize="@dimen/text_24sp"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Pair and Execution Type (Centered) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvPair"
+                style="@style/TextAppearance.CryptoPulse.HeadLine1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BTCUSDT"
+                android:textSize="@dimen/text_28sp"
+                android:letterSpacing="0.05"
+                android:gravity="center"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tvStrategy"
+                style="@style/TextAppearance.CryptoPulse.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MANUAL_EXECUTION"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/text_16sp"
+                android:textAllCaps="true"
+                android:gravity="center" />
+                
+            <!-- Confidence Removed as per request -->
+            <TextView
+                android:id="@+id/tvConfidence"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+
+        <!-- Metrics Card - Compact -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_balance_border"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+                <!-- Row 0: Current Live Price (Context) -->
+                <LinearLayout
+                    android:id="@+id/layoutLivePrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:visibility="gone">
+                    <TextView style="@style/TextAppearance.CryptoPulse.BodySmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Live Market Price" android:textAllCaps="true" android:textStyle="bold" android:textColor="@color/text_tertiary"/>
+                    <TextView android:id="@+id/tvCurrentPrice" style="@style/TextAppearance.CryptoPulse.HeadLine1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-- USDT" android:textSize="@dimen/text_18sp" android:textColor="@color/text_secondary"/>
+                </LinearLayout>
+
+                <!-- Row 1: Investment Amount (Requested as primary by user) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+                    <TextView style="@style/TextAppearance.CryptoPulse.BodySmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="INVESTMENT (USDT)" android:textAllCaps="true" android:textStyle="bold" android:textColor="@color/text_secondary"/>
+                    <TextView android:id="@+id/tvInvestedAmount" style="@style/TextAppearance.CryptoPulse.HeadLine1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="50 USDT" android:textSize="@dimen/text_xl" android:textColor="@color/text_primary"/>
+                </LinearLayout>
+
+                <!-- Row 1.5: Entry Coin Price (Sub-metric) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+                    <TextView style="@style/TextAppearance.CryptoPulse.BodySmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Entry Coin Price" android:textAllCaps="true" android:textStyle="bold" android:textColor="@color/text_tertiary"/>
+                    <TextView android:id="@+id/tvEntryPrice" style="@style/TextAppearance.CryptoPulse.Body" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.02599 $" android:textSize="@dimen/text_14sp" android:textColor="@color/text_secondary"/>
+                </LinearLayout>
+
+                <!-- Row 2: SL and TP -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp">
+                    
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <TextView style="@style/TextAppearance.CryptoPulse.BodySmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Stop Loss" android:textAllCaps="true" android:textStyle="bold" android:textColor="@color/text_secondary"/>
+                        <TextView android:id="@+id/tvStopLoss" style="@style/TextAppearance.CryptoPulse.HeadLine2" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="44,100 USDT" android:textColor="@color/status_error" android:textSize="@dimen/text_base"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:orientation="vertical">
+                        <TextView style="@style/TextAppearance.CryptoPulse.BodySmall" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Take Profit" android:textAllCaps="true" android:textStyle="bold" android:textColor="@color/text_secondary" android:gravity="end"/>
+                        <TextView android:id="@+id/tvTakeProfit" style="@style/TextAppearance.CryptoPulse.HeadLine2" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="48,700 USDT" android:textColor="@color/status_success" android:textSize="@dimen/text_base" android:gravity="end"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <include layout="@layout/divider_horizontal" />
+                <View android:layout_width="match_parent" android:layout_height="12dp"/>
+
+                <!-- Row 3: P and L -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+                    <TextView style="@style/TextAppearance.CryptoPulse.BodySmall" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Estimated Profit" android:textStyle="bold" android:textAllCaps="true" android:textColor="@color/text_secondary"/>
+                    <TextView android:id="@+id/tvEstimatedPnL" style="@style/TextAppearance.CryptoPulse.HeadLine2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="+3,450.00 USDT" android:textColor="@color/status_success"/>
+                </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:id="@+id/layoutButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelTrade"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="CANCEL"
+                android:textColor="@color/text_secondary"
+                app:strokeColor="@color/text_tertiary"
+                app:cornerRadius="@dimen/button_corner_radius" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExecuteTrade"
+                style="@style/Widget.CryptoPulse.Button"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="TRADE NOW"
+                app:backgroundTint="@color/status_success" />
+
+        </LinearLayout>
+
+        <!-- Progress (Hidden) -->
+        <LinearLayout
+            android:id="@+id/layoutProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:gravity="center"
+            android:padding="20dp">
+            
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:indeterminate="true"
+                android:indeterminateTint="@color/status_success"
+                android:layout_marginBottom="12dp"/>
+                
+            <TextView
+                style="@style/TextAppearance.CryptoPulse.Body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Executing Trade..."
+                android:textSize="@dimen/text_14sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Result Overlay -->
+    <LinearLayout
+        android:id="@+id/layoutResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="@color/bg_screen"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:elevation="20dp">
+        
+        <ImageView
+            android:id="@+id/imgResultIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/btn_star_big_on"
+            app:tint="@color/status_success"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tvResultTitle"
+            style="@style/TextAppearance.CryptoPulse.HeadLine1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trade Executed"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_20sp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Structure Result Data Container -->
+        <LinearLayout
+            android:id="@+id/layoutSuccessData"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:layout_marginBottom="24dp">
+
+            <!-- Subtitle: Pair | Side -->
+            <TextView
+                android:id="@+id/tvResPairSide"
+                style="@style/TextAppearance.CryptoPulse.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BTCUSDT | BUY"
+                android:textAlignment="center"
+                android:textColor="@color/text_secondary" 
+                android:textSize="@dimen/text_14sp"
+                android:textAllCaps="true"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Row 1: Order ID -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Order ID"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_14sp"/>
+                <TextView
+                    android:id="@+id/tvResOrderId"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="--"
+                    android:gravity="end"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_14sp"/>
+            </LinearLayout>
+
+            <!-- Row 2: Entry Price -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Entry Price"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_14sp"/>
+                <TextView
+                    android:id="@+id/tvResEntryPrice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="--"
+                    android:gravity="end"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_14sp"/>
+            </LinearLayout>
+
+            <!-- Row 3: Stop Loss -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Stop Loss"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_14sp"/>
+                <TextView
+                    android:id="@+id/tvResStopLoss"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="--"
+                    android:gravity="end"
+                    android:textColor="@color/status_error"
+                    android:textSize="@dimen/text_14sp"/>
+            </LinearLayout>
+
+            <!-- Row 4: Take Profit -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Take Profit"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_14sp"/>
+                <TextView
+                    android:id="@+id/tvResTakeProfit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="--"
+                    android:gravity="end"
+                    android:textColor="@color/status_success"
+                    android:textSize="@dimen/text_14sp"/>
+            </LinearLayout>
+
+            <!-- Divider -->
+             <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#333333"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Row 5: Estimated Profit -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Estimated Profit"
+                    android:textColor="@color/status_success"
+                    android:textSize="@dimen/text_14sp"/>
+                <TextView
+                    android:id="@+id/tvResEstProfit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="--"
+                    android:gravity="end"
+                    android:textColor="@color/status_success"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_14sp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Error Message (Hidden by default) -->
+        <TextView
+            android:id="@+id/tvResultError"
+            style="@style/TextAppearance.CryptoPulse.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Error Details"
+            android:textAlignment="center"
+            android:textColor="@color/status_error"
+            android:textSize="@dimen/text_14sp"
+            android:visibility="gone"
+            android:layout_marginBottom="24dp"/>
+            
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCloseResult"
+            style="@style/Widget.CryptoPulse.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Close" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

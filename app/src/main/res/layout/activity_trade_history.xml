@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_screen">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarHistory"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/bg_card"
+        android:elevation="4dp"
+        app:title="Trade History"
+        app:titleTextColor="@color/text_primary"
+        app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTradeHistory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false"/>
+        
+    <!-- Empty State is toggled programmatically -->
+    <TextView
+        android:id="@+id/tvEmptyHistory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No trade history yet."
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/text_secondary"/>
+
+</LinearLayout>

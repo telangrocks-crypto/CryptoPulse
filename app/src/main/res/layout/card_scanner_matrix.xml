@@ -1,0 +1,302 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/bg_brain_matrix_glass"
+    android:orientation="vertical"
+    android:padding="16dp">
+        
+        <!-- ... (internal content remains same) ... -->
+        <!-- TIMEFRAME TABS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:background="@drawable/bg_scanner_section_box"
+            android:orientation="horizontal"
+            android:padding="2dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tab5m"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="5 Minutes"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_12sp"/>
+
+            <TextView
+                android:id="@+id/tab15m"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="15 Minutes"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_12sp"/>
+
+            <TextView
+                android:id="@+id/tab30m"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="30 Minutes"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_12sp"/>
+
+            <TextView
+                android:id="@+id/tab1h"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="1 Hour"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:textSize="@dimen/text_12sp"/>
+        </LinearLayout>
+
+        <!-- CURRENT TICKER SECTION -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_scanner_section_box"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/tvCenterDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BTC/USDT"
+                android:textColor="@color/brand_primary"
+                android:textSize="@dimen/text_32sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-black"
+                android:letterSpacing="0.02"/>
+
+            <TextView
+                android:id="@+id/tvNeuralThought"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SYNTHESIZING NEURAL DATA..."
+                android:textColor="@color/brand_primary"
+                android:textSize="@dimen/text_10sp"
+                android:fontFamily="monospace"
+                android:layout_marginTop="2dp"
+                android:alpha="0.8"
+                android:letterSpacing="0.1"/>
+
+            <TextView
+                android:id="@+id/tvSignalLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SEARCHING..."
+                android:textColor="@color/status_info"
+                android:textSize="@dimen/text_18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp"
+                android:letterSpacing="0.05"/>
+
+            <!-- ✅ FIX BLOCKER #4: NEW signal indicator badge -->
+            <TextView
+                android:id="@+id/tvNewBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="● NEW"
+                android:textColor="@color/status_success"
+                android:textSize="@dimen/text_10sp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:layout_marginTop="4dp"
+                android:letterSpacing="0.1"
+                android:visibility="gone"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:background="@drawable/bg_scanner_section_box"/>
+
+        </LinearLayout>
+
+        <!-- AI INSIGHT BOX -->
+        <LinearLayout
+            android:id="@+id/llAiInsightBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_scanner_section_box"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AI MARKET INSIGHT"
+                android:textColor="@color/brand_primary"
+                android:textSize="@dimen/text_10sp"
+                android:fontFamily="monospace"
+                android:layout_marginBottom="8dp"
+                android:letterSpacing="0.2"/>
+
+            <TextView
+                android:id="@+id/tvAiMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Initializing technical audit across multiple timeframes. Scanning for high-velocity volatility gaps..."
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_15sp"
+                android:lineSpacingExtra="4dp"
+                android:fontFamily="sans-serif-medium"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvEstimatedDetection"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Est. Detection: 2-4 minutes"
+                    android:textColor="@color/status_info"
+                    android:textSize="@dimen/text_11sp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    android:textAllCaps="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="● SIGNAL GUARD ACTIVE"
+                    android:textColor="@color/status_success"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.1"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- TECHNICAL AUDIT TABLE -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_scanner_section_box"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TECHNICAL AUDIT"
+                android:textColor="@color/brand_primary"
+                android:textSize="@dimen/text_10sp"
+                android:fontFamily="monospace"
+                android:layout_marginBottom="8dp"
+                android:letterSpacing="0.2"/>
+
+            <!-- Row 1: ADX and RSI -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- ADX -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ADX (14)" android:textColor="@color/text_tertiary" android:textSize="@dimen/text_10sp"/>
+                    <TextView android:id="@+id/tvAdxValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="--" android:textColor="@color/text_primary" android:textStyle="bold" android:textSize="@dimen/text_14sp"/>
+                </LinearLayout>
+                <!-- RSI -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RSI (14)" android:textColor="@color/text_tertiary" android:textSize="@dimen/text_10sp"/>
+                    <TextView android:id="@+id/tvRsiValue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="--" android:textColor="@color/text_primary" android:textStyle="bold" android:textSize="@dimen/text_14sp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1AFFFFFF" android:layout_marginTop="8dp" android:layout_marginBottom="8dp"/>
+
+            <!-- Row 2: EMA and VOL -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <!-- EMA PULLBACK -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PULLBACK" android:textColor="@color/text_tertiary" android:textSize="@dimen/text_10sp"/>
+                    <TextView android:id="@+id/tvPullbackStatus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="NORMAL" android:textColor="@color/status_info" android:textStyle="bold" android:textSize="@dimen/text_14sp"/>
+                </LinearLayout>
+                <!-- VOLUMETRIC -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VOL AUDIT" android:textColor="@color/text_tertiary" android:textSize="@dimen/text_10sp"/>
+                    <TextView android:id="@+id/tvVolStatus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="STABLE" android:textColor="@color/status_success" android:textStyle="bold" android:textSize="@dimen/text_14sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!-- MASTER TRIGGER / CONFIDENCE TRIGGER -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+            <TextView
+                android:id="@+id/tvConfidenceLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AUDIT CONFIDENCE"
+                android:textColor="@color/text_tertiary"
+                android:textSize="@dimen/text_10sp"
+                android:letterSpacing="0.1"
+                android:textStyle="bold"/>
+            <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tvConfidenceValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0%"
+                android:textColor="@color/brand_primary"
+                android:textSize="@dimen/text_10sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="12dp"
+            android:background="@drawable/bg_scanner_section_box"
+            android:padding="2dp">
+            
+            <View
+                android:id="@+id/vConfidenceBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_scanner_rainbow_bar" />
+                
+        </FrameLayout>
+
+    </LinearLayout>

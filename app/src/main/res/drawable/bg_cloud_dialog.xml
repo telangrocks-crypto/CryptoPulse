@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base Semi-Transparent Dark Layer -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FF000000" /> <!-- Pure black for stronger background -->
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
+    <!-- Cloud Effect 1: Soft White Mist (Top Left) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="400dp"
+                android:centerX="0.0"
+                android:centerY="0.0"
+                android:startColor="#1AFFFFFF"
+                android:endColor="#00FFFFFF" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
+    <!-- Cloud Effect 2: Soft Gold Glow (Bottom Right) -->
+    <!-- Adds a subtle warm cloud texture matching the brand -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="400dp"
+                android:centerX="1.0"
+                android:centerY="1.0"
+                android:startColor="#10F7A600"
+                android:endColor="#00000000" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+
+    <!-- Cloud Effect 3: Central Diffused Mist -->
+    <item android:top="50dp" android:bottom="50dp">
+        <shape android:shape="rectangle">
+             <gradient
+                android:type="linear"
+                android:angle="45"
+                android:startColor="#05FFFFFF"
+                android:centerColor="#08FFFFFF"
+                android:endColor="#05FFFFFF" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+    
+    <!-- Border Overlay -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke 
+                android:width="1.5dp" 
+                android:color="@color/status_success" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+</layer-list>

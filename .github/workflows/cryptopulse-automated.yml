@@ -20,6 +20,7 @@ env:
   JAVA_VERSION: '17'
   GRADLE_OPTS: '-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false'
   AWS_API_URL: 'https://hs28uxr9j6.execute-api.ap-south-1.amazonaws.com/prod'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   # =============================================================================

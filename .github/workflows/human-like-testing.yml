@@ -539,12 +539,12 @@ jobs:
         STATUSES=("${{ needs.test-registration.result }}" "${{ needs.test-subscription.result }}" "${{ needs.test-api-keys.result }}" "${{ needs.test-market-data.result }}" "${{ needs.test-trade-execution.result }}" "${{ needs.test-position-monitoring.result }}" "${{ needs.test-backend-infrastructure.result }}")
         
         PASSED=0
-        TOTAL=${#JOBS[@]}
+        TOTAL=7
         
         for i in "${!JOBS[@]}"; do
-          if [ "${STATUSES[$i]}" == "success" ]; then
+          if [ "${STATUSES[$i]}" = "success" ]; then
             echo "  ✅ ${JOBS[$i]}: PASSED"
-            ((PASSED++))
+            PASSED=$((PASSED + 1))
           else
             echo "  ⚠️  ${JOBS[$i]}: ${STATUSES[$i]}"
           fi

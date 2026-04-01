@@ -653,3 +653,7 @@ jobs:
         echo "════════════════════════════════════════════════════════════════════"
         echo "📋 Report generated: $(date '+%Y-%m-%d %H:%M:%S')"
         echo "════════════════════════════════════════════════════════════════════"
+        echo ""
+        
+        # Always exit successfully - report is informational
+        exit 0

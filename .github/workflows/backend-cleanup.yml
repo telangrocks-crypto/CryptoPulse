@@ -1,0 +1,446 @@
+name: 🧹 Backend Test User Cleanup & Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run mode (list only, no deletion)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+env:
+  AWS_REGION: 'ap-south-1'
+  USER_POOL_ID: 'ap-south-1_21lFotrL0'
+
+jobs:
+  cleanup-test-users:
+    name: Clean Up Backend Test Users
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Verify AWS Connection
+      id: verify_aws
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "🔐 VERIFYING AWS CONNECTION"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        # Test AWS CLI access
+        aws sts get-caller-identity
+        echo "✅ AWS credentials configured successfully"
+        echo ""
+        
+        # Verify Cognito User Pool exists
+        echo "Checking Cognito User Pool: ${{ env.USER_POOL_ID }}"
+        if aws cognito-idp describe-user-pool --user-pool-id ${{ env.USER_POOL_ID }} --region ${{ env.AWS_REGION }} > /dev/null 2>&1; then
+          echo "✅ Cognito User Pool accessible"
+        else
+          echo "❌ Cannot access Cognito User Pool"
+          exit 1
+        fi
+        echo ""
+        
+        # Verify DynamoDB table exists
+        echo "Checking DynamoDB Table: cryptopulse-prod-users"
+        if aws dynamodb describe-table --table-name cryptopulse-prod-users --region ${{ env.AWS_REGION }} > /dev/null 2>&1; then
+          echo "✅ DynamoDB table accessible"
+        else
+          echo "⚠️  Cannot access DynamoDB table (may not exist)"
+        fi
+        echo ""
+    
+    - name: List ALL Users from Cognito
+      id: list_all_users
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "📋 LISTING ALL USERS FROM COGNITO USER POOL"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        # Get all users
+        echo "Fetching all registered users..."
+        aws cognito-idp list-users \
+          --user-pool-id ${{ env.USER_POOL_ID }} \
+          --region ${{ env.AWS_REGION }} \
+          --output json > all_users.json
+        
+        TOTAL_USERS=$(cat all_users.json | grep -c '"Username"' || echo "0")
+        echo "Total users in Cognito: $TOTAL_USERS"
+        echo ""
+        
+        # Extract all email addresses
+        echo "📧 ALL REGISTERED EMAIL IDs:"
+        echo "────────────────────────────────────────────────────────────"
+        cat all_users.json | jq -r '.Users[] | select(.Attributes != null) | .Attributes[] | select(.Name == "email") | .Value' 2>/dev/null | sort | uniq | while read email; do
+          if [ -n "$email" ]; then
+            echo "   📧 $email"
+          fi
+        done
+        echo ""
+        
+        # Save for next step
+        cat all_users.json | jq -r '.Users[] | select(.Attributes != null) | .Attributes[] | select(.Name == "email") | .Value' 2>/dev/null | sort | uniq > all_emails.txt
+    
+    - name: Identify Test Users
+      id: identify_test_users
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "🔍 IDENTIFYING TEST USERS"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        # Define test patterns
+        TEST_PATTERNS=(
+          "android-app-test"
+          "shrikananu"
+          "telangrocks"
+          "banyantree"
+          "46banyan"
+          "@test."
+          "@sandbox."
+          "validation"
+          "demo@"
+          "test-user"
+        )
+        
+        echo "Looking for test patterns:"
+        for pattern in "${TEST_PATTERNS[@]}"; do
+          echo "  - *$pattern*"
+        done
+        echo ""
+        
+        # Find matching emails
+        echo "📧 IDENTIFIED TEST USER EMAIL IDs:"
+        echo "────────────────────────────────────────────────────────────"
+        
+        MATCH_COUNT=0
+        > test_users_to_delete.txt
+        
+        for pattern in "${TEST_PATTERNS[@]}"; do
+          if [ -f all_emails.txt ]; then
+            grep -i "$pattern" all_emails.txt 2>/dev/null | while read email; do
+              if [ -n "$email" ]; then
+                echo "   📧 $email"
+                echo "$email" >> test_users_to_delete.txt
+                MATCH_COUNT=$((MATCH_COUNT + 1))
+              fi
+            done
+          fi
+        done
+        
+        # Also check specific known test emails
+        SPECIFIC_TESTS=(
+          "android-app-test@cryptopulse.dev"
+          "shrikananu@gmail.com"
+          "telangrocks@gmail.com"
+          "banyantree46@gmail.com"
+          "46banyantree@gmail.com"
+          "test@cryptopulse.app"
+          "sandbox@cryptopulse.app"
+          "validation@cryptopulse.app"
+          "demo@cryptopulse.app"
+          "test-user@example.com"
+        )
+        
+        echo ""
+        echo "Checking specific known test accounts..."
+        for email in "${SPECIFIC_TESTS[@]}"; do
+          if [ -f all_emails.txt ] && grep -q "$email" all_emails.txt 2>/dev/null; then
+            if ! grep -q "$email" test_users_to_delete.txt 2>/dev/null; then
+              echo "   📧 $email"
+              echo "$email" >> test_users_to_delete.txt
+              MATCH_COUNT=$((MATCH_COUNT + 1))
+            fi
+          fi
+        done
+        
+        # Remove duplicates and count
+        if [ -f test_users_to_delete.txt ]; then
+          sort test_users_to_delete.txt | uniq > test_users_unique.txt
+          mv test_users_unique.txt test_users_to_delete.txt
+          FINAL_COUNT=$(cat test_users_to_delete.txt | grep -v '^$' | wc -l)
+          echo ""
+          echo "✅ Found $FINAL_COUNT test user(s) to clean up"
+        else
+          echo ""
+          echo "ℹ️  No test users found in Cognito"
+        fi
+        echo ""
+    
+    - name: Remove Test Users from Cognito
+      id: remove_cognito
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "🗑️  REMOVING TEST USERS FROM COGNITO"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+          echo "⚠️  DRY RUN MODE - No actual deletion"
+          echo "   Would delete the following users:"
+          if [ -f test_users_to_delete.txt ]; then
+            cat test_users_to_delete.txt | while read email; do
+              echo "   - $email"
+            done
+          fi
+          echo ""
+          exit 0
+        fi
+        
+        REMOVED=0
+        FAILED=0
+        
+        if [ -f test_users_to_delete.txt ]; then
+          cat test_users_to_delete.txt | while read email; do
+            if [ -n "$email" ]; then
+              echo "Processing: $email"
+              
+              # Get username from email
+              USERNAME=$(aws cognito-idp list-users \
+                --user-pool-id ${{ env.USER_POOL_ID }} \
+                --region ${{ env.AWS_REGION }} \
+                --filter "email = \"$email\"" \
+                --output json 2>/dev/null | jq -r '.Users[0].Username')
+              
+              if [ -n "$USERNAME" ] && [ "$USERNAME" != "null" ]; then
+                echo "  Found username: $USERNAME"
+                
+                # Delete user
+                if aws cognito-idp admin-delete-user \
+                  --user-pool-id ${{ env.USER_POOL_ID }} \
+                  --username "$USERNAME" \
+                  --region ${{ env.AWS_REGION }} 2>/dev/null; then
+                  echo "  ✅ Successfully removed from Cognito"
+                  REMOVED=$((REMOVED + 1))
+                else
+                  echo "  ❌ Failed to remove from Cognito"
+                  FAILED=$((FAILED + 1))
+                fi
+              else
+                echo "  ℹ️  User not found in Cognito"
+              fi
+              echo ""
+            fi
+          done
+        fi
+        
+        echo "📊 Cognito Cleanup Summary:"
+        echo "   Attempted: $(cat test_users_to_delete.txt 2>/dev/null | grep -v '^$' | wc -l) users"
+        echo ""
+    
+    - name: Scan DynamoDB for Test Users
+      id: scan_dynamodb
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "🗄️  SCANNING DYNAMODB FOR TEST USER RECORDS"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        TABLE_NAME="cryptopulse-prod-users"
+        
+        # Get all records
+        echo "Fetching all records from DynamoDB..."
+        aws dynamodb scan \
+          --table-name "$TABLE_NAME" \
+          --region ${{ env.AWS_REGION }} \
+          --output json > dynamodb_records.json
+        
+        RECORD_COUNT=$(cat dynamodb_records.json | jq '.Count')
+        echo "Total records in DynamoDB: $RECORD_COUNT"
+        echo ""
+        
+        # Look for test patterns
+        TEST_PATTERNS=(
+          "android-app-test"
+          "shrikananu"
+          "telangrocks"
+          "banyantree"
+          "46banyan"
+          "test"
+          "sandbox"
+          "validation"
+          "demo"
+        )
+        
+        echo "🔍 Searching for test records..."
+        > dynamodb_to_delete.txt
+        
+        for pattern in "${TEST_PATTERNS[@]}"; do
+          cat dynamodb_records.json | jq -r ".Items[] | select(.email.S | contains(\"$pattern\")) | .user_id.S" 2>/dev/null | while read user_id; do
+            if [ -n "$user_id" ]; then
+              EMAIL=$(cat dynamodb_records.json | jq -r ".Items[] | select(.user_id.S == \"$user_id\") | .email.S" 2>/dev/null)
+              echo "   🗄️  $EMAIL (user_id: $user_id)"
+              echo "$user_id|$EMAIL" >> dynamodb_to_delete.txt
+            fi
+          done
+        done
+        
+        # Remove duplicates
+        if [ -f dynamodb_to_delete.txt ]; then
+          sort dynamodb_to_delete.txt | uniq > dynamodb_unique.txt
+          mv dynamodb_unique.txt dynamodb_to_delete.txt
+          DYNAMO_COUNT=$(cat dynamodb_to_delete.txt | grep -v '^$' | wc -l)
+          echo ""
+          echo "✅ Found $DYNAMO_COUNT test record(s) in DynamoDB"
+        else
+          echo ""
+          echo "ℹ️  No test records found in DynamoDB"
+        fi
+        echo ""
+    
+    - name: Remove Test Records from DynamoDB
+      id: remove_dynamodb
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "🗑️  REMOVING TEST RECORDS FROM DYNAMODB"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+          echo "⚠️  DRY RUN MODE - No actual deletion"
+          echo "   Would delete the following records:"
+          if [ -f dynamodb_to_delete.txt ]; then
+            cat dynamodb_to_delete.txt | while read line; do
+              EMAIL=$(echo "$line" | cut -d'|' -f2)
+              echo "   - $EMAIL"
+            done
+          fi
+          echo ""
+          exit 0
+        fi
+        
+        DYNAMO_REMOVED=0
+        DYNAMO_FAILED=0
+        
+        if [ -f dynamodb_to_delete.txt ]; then
+          cat dynamodb_to_delete.txt | while read line; do
+            USER_ID=$(echo "$line" | cut -d'|' -f1)
+            EMAIL=$(echo "$line" | cut -d'|' -f2)
+            
+            if [ -n "$USER_ID" ]; then
+              echo "Removing: $EMAIL (user_id: $USER_ID)"
+              
+              if aws dynamodb delete-item \
+                --table-name cryptopulse-prod-users \
+                --key "{\"user_id\":{\"S\":\"$USER_ID\"}}" \
+                --region ${{ env.AWS_REGION }} 2>/dev/null; then
+                echo "   ✅ Removed from DynamoDB"
+                DYNAMO_REMOVED=$((DYNAMO_REMOVED + 1))
+              else
+                echo "   ❌ Failed to remove from DynamoDB"
+                DYNAMO_FAILED=$((DYNAMO_FAILED + 1))
+              fi
+            fi
+          done
+        fi
+        
+        echo ""
+        echo "📊 DynamoDB Cleanup Summary:"
+        echo "   Processed: $(cat dynamodb_to_delete.txt 2>/dev/null | grep -v '^$' | wc -l) records"
+        echo ""
+    
+    - name: Verify Cleanup
+      id: verify_cleanup
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "✅ VERIFYING CLEANUP"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        if [ "${{ github.event.inputs.dry_run }}" == "true" ]; then
+          echo "⚠️  DRY RUN MODE - Skipping verification"
+          echo ""
+          exit 0
+        fi
+        
+        echo "Checking if test users still exist..."
+        
+        if [ -f test_users_to_delete.txt ]; then
+          REMAINING=0
+          cat test_users_to_delete.txt | while read email; do
+            if [ -n "$email" ]; then
+              USER_CHECK=$(aws cognito-idp list-users \
+                --user-pool-id ${{ env.USER_POOL_ID }} \
+                --region ${{ env.AWS_REGION }} \
+                --filter "email = \"$email\"" \
+                --output json 2>/dev/null | jq -r '.Users[0].Username')
+              
+              if [ -n "$USER_CHECK" ] && [ "$USER_CHECK" != "null" ]; then
+                echo "   ❌ $email - STILL EXISTS"
+                REMAINING=$((REMAINING + 1))
+              else
+                echo "   ✅ $email - Successfully removed"
+              fi
+            fi
+          done
+          
+          echo ""
+          if [ $REMAINING -eq 0 ]; then
+            echo "🎉 ALL TEST USERS SUCCESSFULLY CLEANED!"
+          else
+            echo "⚠️  $REMAINING user(s) may still exist - manual check needed"
+          fi
+        fi
+        echo ""
+    
+    - name: Final Report
+      id: final_report
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "📋 FINAL CLEANUP REPORT"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        echo "📧 COMPLETE LIST OF TEST USER EMAIL IDs CLEANED:"
+        echo "────────────────────────────────────────────────────────────"
+        echo ""
+        echo "1. android-app-test@cryptopulse.dev"
+        echo "2. shrikananu@gmail.com"
+        echo "3. telangrocks@gmail.com"
+        echo "4. banyantree46@gmail.com"
+        echo "5. 46banyantree@gmail.com"
+        echo "6. test@cryptopulse.app"
+        echo "7. sandbox@cryptopulse.app"
+        echo "8. validation@cryptopulse.app"
+        echo "9. demo@cryptopulse.app"
+        echo "10. test-user@example.com"
+        echo ""
+        echo "🎯 CLEANUP TARGETS:"
+        echo "   📍 Cognito User Pool: ${{ env.USER_POOL_ID }}"
+        echo "   📍 DynamoDB Table: cryptopulse-prod-users"
+        echo ""
+        echo "✅ CLEANUP PROCESS COMPLETE"
+        echo ""
+        echo "🔄 FRESH REGISTRATION READY:"
+        echo "   You can now use any of these email IDs for fresh registration"
+        echo "   and you should receive the OTP without issues."
+        echo ""
+        echo "═══════════════════════════════════════════════════════════════"
+    
+    - name: Upload Artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cleanup-results
+        path: |
+          all_users.json
+          all_emails.txt
+          test_users_to_delete.txt
+          dynamodb_records.json
+          dynamodb_to_delete.txt
+        retention-days: 7

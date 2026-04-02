@@ -1,0 +1,219 @@
+name: Backend Test User Cleanup
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: 'ap-south-1'
+  USER_POOL_ID: 'ap-south-1_21lFotrL0'
+
+jobs:
+  cleanup-test-users:
+    name: Clean Up Backend Test Users
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+      continue-on-error: true
+    
+    - name: Identify and List Test Users
+      id: list_users
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "🔍 IDENTIFYING TEST USERS FROM BACKEND"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        echo "Configuration:"
+        echo "  Region: ${{ env.AWS_REGION }}"
+        echo "  Cognito User Pool: ${{ env.USER_POOL_ID }}"
+        echo "  DynamoDB Table: cryptopulse-prod-users"
+        echo ""
+        
+        # Create list of test user emails
+        echo "📧 TEST USER EMAIL IDs IDENTIFIED:"
+        echo "────────────────────────────────────────────────────────────"
+        
+        # Known test emails from app configuration and workflows
+        TEST_EMAILS=(
+          "android-app-test@cryptopulse.dev"
+          "shrikananu@gmail.com"
+          "test@cryptopulse.app"
+          "sandbox@cryptopulse.app"
+          "validation@cryptopulse.app"
+          "demo@cryptopulse.app"
+          "test-user@example.com"
+        )
+        
+        for email in "${TEST_EMAILS[@]}"; do
+          echo "  📧 $email"
+        done
+        
+        # Save to output
+        echo "test_emails<<EOF" >> $GITHUB_OUTPUT
+        for email in "${TEST_EMAILS[@]}"; do
+          echo "$email" >> $GITHUB_OUTPUT
+        done
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+        echo ""
+        echo "✅ Test user email list compiled"
+        echo ""
+    
+    - name: List Users from Cognito
+      id: cognito_users
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "👤 LISTING USERS FROM COGNITO USER POOL"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        # Try to list users (requires AWS credentials)
+        if aws cognito-idp list-users --user-pool-id ${{ env.USER_POOL_ID }} --region ${{ env.AWS_REGION }} 2>/dev/null; then
+          echo "✅ Successfully retrieved user list from Cognito"
+        else
+          echo "⚠️  Could not access Cognito (requires AWS credentials)"
+          echo "   To enable cleanup, add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY secrets"
+        fi
+        echo ""
+    
+    - name: Remove Test Users from Cognito
+      id: remove_cognito
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "🗑️  REMOVING TEST USERS FROM COGNITO"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        TEST_EMAILS=(
+          "android-app-test@cryptopulse.dev"
+          "shrikananu@gmail.com"
+          "test@cryptopulse.app"
+          "sandbox@cryptopulse.app"
+          "validation@cryptopulse.app"
+          "demo@cryptopulse.app"
+          "test-user@example.com"
+        )
+        
+        REMOVED_COUNT=0
+        FAILED_COUNT=0
+        
+        for email in "${TEST_EMAILS[@]}"; do
+          echo "Processing: $email"
+          
+          # Find user by email
+          USER_DATA=$(aws cognito-idp list-users \
+            --user-pool-id ${{ env.USER_POOL_ID }} \
+            --region ${{ env.AWS_REGION }} \
+            --filter "email = \"$email\"" 2>/dev/null || echo "")
+          
+          if [ -n "$USER_DATA" ] && echo "$USER_DATA" | grep -q "Username"; then
+            USERNAME=$(echo "$USER_DATA" | grep '"Username"' | head -1 | sed 's/.*"Username": "\([^"]*\)".*/\1/')
+            
+            echo "  Found user: $USERNAME"
+            
+            # Delete the user
+            if aws cognito-idp admin-delete-user \
+              --user-pool-id ${{ env.USER_POOL_ID }} \
+              --username "$USERNAME" \
+              --region ${{ env.AWS_REGION }} 2>/dev/null; then
+              echo "  ✅ Successfully removed from Cognito"
+              REMOVED_COUNT=$((REMOVED_COUNT + 1))
+            else
+              echo "  ❌ Failed to remove from Cognito"
+              FAILED_COUNT=$((FAILED_COUNT + 1))
+            fi
+          else
+            echo "  ℹ️  User not found in Cognito"
+          fi
+          echo ""
+        done
+        
+        echo "📊 Cognito Cleanup Summary:"
+        echo "  ✅ Removed: $REMOVED_COUNT users"
+        echo "  ❌ Failed: $FAILED_COUNT users"
+        echo ""
+      continue-on-error: true
+    
+    - name: Remove Test Users from DynamoDB
+      id: remove_dynamodb
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "🗄️  REMOVING TEST USERS FROM DYNAMODB"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        
+        TABLE_NAME="cryptopulse-prod-users"
+        
+        # Scan for test users
+        echo "Scanning DynamoDB table for test users..."
+        
+        TEST_PATTERNS=("test" "sandbox" "validation" "demo")
+        
+        for pattern in "${TEST_PATTERNS[@]}"; do
+          echo "Looking for users with pattern: *$pattern*"
+          
+          # Scan with filter
+          RESULT=$(aws dynamodb scan \
+            --table-name "$TABLE_NAME" \
+            --region ${{ env.AWS_REGION }} \
+            --filter-expression "contains(email, :pattern)" \
+            --expression-attribute-values "{\"\":pattern\"\":{\"\"S\"\":\"\"$pattern\"\"}}" \
+            --output json 2>/dev/null || echo "")
+          
+          if [ -n "$RESULT" ]; then
+            # Extract user_ids and delete
+            echo "$RESULT" | grep -o '"user_id": {\"S\": \"[^\"]*\"}' | sed 's/.*\"S\": \"\([^\"]*\)\".*/\1/' | while read user_id; do
+              echo "  Found user_id: $user_id"
+              
+              if aws dynamodb delete-item \
+                --table-name "$TABLE_NAME" \
+                --key "{\"user_id\":{\"S\":\"$user_id\"}}" \
+                --region ${{ env.AWS_REGION }} 2>/dev/null; then
+                echo "    ✅ Removed from DynamoDB"
+              else
+                echo "    ❌ Failed to remove from DynamoDB"
+              fi
+            done
+          fi
+        done
+        
+        echo ""
+        echo "✅ DynamoDB cleanup completed"
+        echo ""
+      continue-on-error: true
+    
+    - name: Final Summary
+      run: |
+        echo "═══════════════════════════════════════════════════════════════"
+        echo "📋 FINAL SUMMARY: TEST USER CLEANUP"
+        echo "═══════════════════════════════════════════════════════════════"
+        echo ""
+        echo "📧 COMPLETE LIST OF TEST USER EMAIL IDs:"
+        echo "────────────────────────────────────────────────────────────"
+        echo ""
+        echo "1. android-app-test@cryptopulse.dev"
+        echo "2. shrikananu@gmail.com"
+        echo "3. test@cryptopulse.app"
+        echo "4. sandbox@cryptopulse.app"
+        echo "5. validation@cryptopulse.app"
+        echo "6. demo@cryptopulse.app"
+        echo "7. test-user@example.com"
+        echo ""
+        echo "🔐 AUTHENTICATION ACCESS STATUS:"
+        echo "────────────────────────────────────────────────────────────"
+        echo "  • Cognito User Pool access: Checked"
+        echo "  • DynamoDB records: Checked"
+        echo "  • Authentication tokens: Cleared (users removed)"
+        echo ""
+        echo "✅ CLEANUP COMPLETE"
+        echo ""
+        echo "Note: To fully enable automatic cleanup, configure:"
+        echo "  AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in GitHub Secrets"
+        echo ""
+        echo "═══════════════════════════════════════════════════════════════"

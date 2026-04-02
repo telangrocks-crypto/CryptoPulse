@@ -43,6 +43,9 @@ jobs:
         TEST_EMAILS=(
           "android-app-test@cryptopulse.dev"
           "shrikananu@gmail.com"
+          "telangrocks@gmail.com"
+          "banyantree46@gmail.com"
+          "46banyantree@gmail.com"
           "test@cryptopulse.app"
           "sandbox@cryptopulse.app"
           "validation@cryptopulse.app"
@@ -93,6 +96,9 @@ jobs:
         TEST_EMAILS=(
           "android-app-test@cryptopulse.dev"
           "shrikananu@gmail.com"
+          "telangrocks@gmail.com"
+          "banyantree46@gmail.com"
+          "46banyantree@gmail.com"
           "test@cryptopulse.app"
           "sandbox@cryptopulse.app"
           "validation@cryptopulse.app"
@@ -153,7 +159,7 @@ jobs:
         # Scan for test users
         echo "Scanning DynamoDB table for test users..."
         
-        TEST_PATTERNS=("test" "sandbox" "validation" "demo")
+        TEST_PATTERNS=("test" "sandbox" "validation" "demo" "telangrocks" "banyantree" "46banyan")
         
         for pattern in "${TEST_PATTERNS[@]}"; do
           echo "Looking for users with pattern: *$pattern*"
@@ -199,11 +205,14 @@ jobs:
         echo ""
         echo "1. android-app-test@cryptopulse.dev"
         echo "2. shrikananu@gmail.com"
-        echo "3. test@cryptopulse.app"
-        echo "4. sandbox@cryptopulse.app"
-        echo "5. validation@cryptopulse.app"
-        echo "6. demo@cryptopulse.app"
-        echo "7. test-user@example.com"
+        echo "3. telangrocks@gmail.com"
+        echo "4. banyantree46@gmail.com"
+        echo "5. 46banyantree@gmail.com"
+        echo "6. test@cryptopulse.app"
+        echo "7. sandbox@cryptopulse.app"
+        echo "8. validation@cryptopulse.app"
+        echo "9. demo@cryptopulse.app"
+        echo "10. test-user@example.com"
         echo ""
         echo "🔐 AUTHENTICATION ACCESS STATUS:"
         echo "────────────────────────────────────────────────────────────"
